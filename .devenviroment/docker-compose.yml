@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  dev:
+    build: .
+    container_name: odontfront
+    volumes:
+      - ..:/home/node
+    stdin_open: true
+    tty: true
+    command: /bin/bash
+    ports:
+      - "3001:3000"
