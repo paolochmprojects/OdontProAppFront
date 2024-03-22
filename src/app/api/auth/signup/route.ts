@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import signService from "./service"
+import signUpService from "./service"
 import { SignUpSchema } from "./schema"
 
 export const POST = async (req: NextRequest) => {
@@ -13,7 +13,7 @@ export const POST = async (req: NextRequest) => {
     }
 
     const { data } = result
-    const saved = await signService.sigIn(data)
+    const saved = await signUpService.signUp(data)
 
     if (!saved) {
         return NextResponse.json({ error: "Error: to register user" }, { status: 400 })

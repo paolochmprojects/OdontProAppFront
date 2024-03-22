@@ -1,10 +1,10 @@
 import db from "@/lib/db"
-import { SignInData } from "./type"
+import { SignUpData } from "./type"
 import { genSalt, hash } from "bcrypt"
 
 
-const signService = {
-    async sigIn(data: SignInData) {
+const signUpService = {
+    async signUp(data: SignUpData) {
         let { confirmPassword, ...datatoSave } = data
         if (confirmPassword !== datatoSave.password) return false
 
@@ -19,4 +19,4 @@ const signService = {
     }
 }
 
-export default signService
+export default signUpService

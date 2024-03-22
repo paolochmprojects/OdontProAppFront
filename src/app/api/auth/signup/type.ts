@@ -1,4 +1,4 @@
-export interface SignInData {
+export interface SignUpData {
     email: string
     password: string
     confirmPassword: string
