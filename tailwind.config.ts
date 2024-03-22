@@ -7,7 +7,12 @@ const config: Config = {
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        inter : ['var(--font-inter)'],
+        bebas : ['var(--font-bebas)'],
+      }
+    },
   },
   plugins: [require("daisyui")],
 };

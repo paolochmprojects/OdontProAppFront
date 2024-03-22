@@ -3,11 +3,31 @@ version: '3.8'
 services:
   dev:
     build: .
-    container_name: odontfront
+    container_name: odontapp
     volumes:
       - ..:/home/node
     stdin_open: true
     tty: true
     command: /bin/bash
     ports:
-      - "3001:3000"
+      - "3000:3000"
+  db:
+    image: postgres:15
+    container_name: odontapp-db
+    ports:
+      - 5432:5432
+    networks:
+      - odont-net
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_PASSWORD=supersecret
+      - POSTGRES_USER=odont
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - odont-db:/var/lib/postgresql/data:rw
+volumes:
+  odont-db:
+
+networks:
+  odont-net:
+    driver: bridge
