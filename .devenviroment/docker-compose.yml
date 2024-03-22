@@ -11,6 +11,8 @@ services:
     command: /bin/bash
     ports:
       - "3000:3000"
+    networks:
+      - odont-net
   db:
     image: postgres:15
     container_name: odontapp-db
