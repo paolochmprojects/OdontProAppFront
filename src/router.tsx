@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import RootLayout from "./routes/RootLayout";
 import Home from "./routes/Home";
-import SignIn from "./routes/signin/SignIn";
+import SignIn, { action as signInAction, loader as signInLoader } from "./routes/signin/SignIn";
 import SignUp from "./routes/signup/SignUp";
 import NotFound from "./routes/NotFound";
 
@@ -16,7 +16,9 @@ const router = createBrowserRouter([
             },
             {
                 path: "signin",
-                element: <SignIn />
+                element: <SignIn />,
+                action: signInAction,
+                loader: signInLoader
             },
             {
                 path: "signup",
@@ -26,7 +28,7 @@ const router = createBrowserRouter([
     },
     {
         path: "/*",
-        element: <NotFound/>,
+        element: <NotFound />,
     }
 
 ])
