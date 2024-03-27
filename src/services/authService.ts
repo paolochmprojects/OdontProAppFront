@@ -1,60 +1,44 @@
-import settings from "../config/settings"
-import { ErrorAPIResponse } from "../types/errorResponse"
 import { SiginForm, SigupForm } from "../types/sign"
-import authStore from "../stores/auth"
+import supabase from "../lib/supabase"
 
 
 const authService = {
 
-    signIn: async (data: SiginForm): Promise<Error | null> => {
-        const res: Response = await fetch(settings.API_HOST + "/auth/signin", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-        if (res.ok) {
-            const { token } = await res.json()
-            window.localStorage.setItem(settings.NAME_KEY_TOKEN, token)
-            authStore.setState({ token, authenticated: true })
-            return null
-        } else {
-            const { message }: ErrorAPIResponse = await res.json()
-            if (typeof message === 'string') {
-                return new Error(message)
-            } else {
-                return new Error(message.join(","))
-            }
-        }
+    signIn: async (data: SiginForm) => {
+        const { error } = await supabase.auth.signInWithPassword({
+            email: data.email,
+            password: data.password
+        });
+
+        if (error) return error;
+        return null;
     },
 
-    signUp: async (data: SigupForm): Promise<Error | null> => {
+    signInGoogle: async () => {
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: "google"
+        });
 
-        const res: Response = await fetch(settings.API_HOST + "/user/signup", {
-            method: "POST",
-            body: JSON.stringify(data),
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
-
-        if (res.ok) {
-            console.log(await res.json())
-            return null
-        } else {
-            const { message }: ErrorAPIResponse = await res.json()
-            if (typeof message === 'string') {
-                return new Error(message)
-            } else {
-                return new Error(message.join(","))
-            }
-        }
+        if (error) return error;
+        return null;
     },
 
-    signOut: () => {
-        window.localStorage.removeItem(settings.NAME_KEY_TOKEN)
-        authStore.setState({ authenticated: false, token: null })
+    signUp: async (data: SigupForm) => {
+        
+        if (data.password !== data.confirmPassword) return new Error("Las contraseñas no coinciden.")
+        
+        const { error } = await supabase.auth.signUp({
+            email: data.email,
+            password: data.password
+        })
+        
+        // TODO: Create contact by default.
+        if (error) return error;
+        return null;
+    },
+
+    signOut: async () => {
+        return await supabase.auth.signOut()
     }
 }
 

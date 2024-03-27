@@ -4,6 +4,5 @@ export interface SiginForm {
 }
 
 export interface SigupForm extends SiginForm{
-    name: string,
     confirmPassword: string
 }

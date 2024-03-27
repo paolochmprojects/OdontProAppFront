@@ -2,6 +2,8 @@ import { Form, redirect, useActionData, useNavigate } from "react-router-dom"
 import { SigupForm } from "../../types/sign"
 import authService from "../../services/authService"
 import authStore from "../../stores/auth"
+import { FaEye, FaEyeSlash } from "react-icons/fa"
+import { useRef, useState } from "react"
 
 export const loader = async () => {
     if (authStore.getState().authenticated) return redirect("/")
@@ -12,15 +14,13 @@ export const action = async ({ request }: { request: Request }) => {
     const formData = await request.formData()
     const data = Object.fromEntries(formData)
 
+
     const userCredentials: SigupForm = {
         email: data.email as string,
         password: data.password as string,
-        name: data.name as string,
         confirmPassword: data.confirmPassword as string
     }
-
     const err = await authService.signUp(userCredentials)
-    console.log(err)
 
     if (err === null) return redirect("/")
     return err
@@ -28,9 +28,20 @@ export const action = async ({ request }: { request: Request }) => {
 
 const SignUp = () => {
 
+    const [passVisible, setPassVisible] = useState(false)
+    const passInput = useRef<HTMLInputElement>(null)
+    const confirmPassInput = useRef<HTMLInputElement>(null)
+
     const navigate = useNavigate()
 
     const err = useActionData()
+
+    const toggleVisible = ()=>{
+        setPassVisible(!passVisible)
+        if (!passInput.current || !confirmPassInput.current) return
+        passInput.current.type = !passVisible ? "password" : "text"
+        confirmPassInput.current.type = !passVisible ? "password" : "text"
+    }
 
     return (<main>
         <div className="max-w-screen-lg mx-auto p-4">
@@ -42,14 +53,6 @@ const SignUp = () => {
                         <span>Error! {err.message}</span>
                     </div>}
                     <div>
-                        <label htmlFor="name">Nombre:</label>
-                        <input id="name"
-                            className="input input-bordered w-full"
-                            type="text"
-                            name="name"
-                            required />
-                    </div>
-                    <div>
                         <label htmlFor="email">Correo:</label>
                         <input id="email"
                             className="input input-bordered w-full"
@@ -57,21 +60,31 @@ const SignUp = () => {
                             name="email"
                             required />
                     </div>
-                    <div>
+                    <div className="relative">
                         <label htmlFor="password">Contraseña:</label>
-                        <input id="password"
+                        <input ref={passInput} id="password"
                             className="input input-bordered w-full"
                             type="password"
                             name="password"
                             required />
+                        <button type="button"
+                            className="absolute right-4 top-9"
+                            onClick={() => toggleVisible()}>
+                            {passVisible ? <FaEye size={25} /> : <FaEyeSlash size={25} />}
+                        </button>
                     </div>
-                    <div>
+                    <div className="relative">
                         <label htmlFor="confirmPassword">Confirma Contraseña:</label>
-                        <input id="confirmPassword"
+                        <input ref={confirmPassInput} id="confirmPassword"
                             className="input input-bordered w-full"
                             type="password"
                             name="confirmPassword"
                             required />
+                        <button type="button"
+                            className="absolute right-4 top-9"
+                            onClick={() => toggleVisible()}>
+                            {passVisible ? <FaEye size={25} /> : <FaEyeSlash size={25} />}
+                        </button>
                     </div>
                     <div className="card-actions">
                         <button type="submit"

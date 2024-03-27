@@ -1,23 +1,19 @@
 import { create } from 'zustand'
-import settings from '../config/settings'
 
 interface State {
     authenticated: boolean,
-    token: string | null,
 }
 
 interface Actions {
-    signInState: (newToken: State['token']) => void,
+    signInState: () => void,
     signOutState: () => void
 }
 
-const savedToken = window.localStorage.getItem(settings.NAME_KEY_TOKEN)
 
 const authStore = create<State & Actions>((set) => ({
-    authenticated: savedToken !== null,
-    token: savedToken,
-    signInState: (newToken) => set(() => ({ authenticated: true, token: newToken })),
-    signOutState: () => set(() => ({ authenticated: false, token: null }))
+    authenticated: false,
+    signInState: () => set(() => ({ authenticated: true })),
+    signOutState: () => set(() => ({ authenticated: false }))
 }))
 
 export default authStore

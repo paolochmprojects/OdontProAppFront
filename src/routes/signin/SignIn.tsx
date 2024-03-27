@@ -1,7 +1,9 @@
 import { Form, redirect, useActionData, useNavigate } from "react-router-dom"
-import { SiginForm } from "../../types/sign"
 import authService from "../../services/authService"
 import authStore from "../../stores/auth"
+import { FcGoogle } from "react-icons/fc";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { useRef, useState } from "react";
 
 export const loader = async () => {
     if (authStore.getState().authenticated) return redirect("/")
@@ -9,23 +11,34 @@ export const loader = async () => {
 }
 
 export const action = async ({ request }: { request: Request }) => {
+
     const formData = await request.formData()
     const data = Object.fromEntries(formData)
 
-    const userCredentials: SiginForm = {
+    const err = await authService.signIn({
         email: data.email as string,
         password: data.password as string
-    }
+    })
 
-    const err = await authService.signIn(userCredentials)
     if (err === null) return redirect("/")
     return err
+
 }
 
 const SignIn = () => {
 
+    const [passVisible, setPassVisible] = useState(false)
+    const passInput = useRef<HTMLInputElement>(null)
+
     const navigate = useNavigate()
     const err = useActionData()
+
+
+    const toggleVisible = () => {
+        setPassVisible(!passVisible)
+        if (!passInput.current) return
+        passInput.current.type = !passVisible ? "password" : "text"
+    }
 
     return (<main>
         <div className="max-w-screen-lg mx-auto p-4">
@@ -44,20 +57,33 @@ const SignIn = () => {
                             name="email"
                             required />
                     </div>
-                    <div>
+                    <div className="relative">
                         <label htmlFor="">Contraseña:</label>
                         <input id="password"
+                            ref={passInput}
                             className="input input-bordered w-full"
                             type="password"
                             name="password"
                             required />
+                        <button type="button"
+                            className="absolute right-4 top-9"
+                            onClick={() => toggleVisible()}>
+                            {passVisible ? <FaEye size={25} /> : <FaEyeSlash size={25} />}
+                        </button>
                     </div>
                     <div className="card-actions">
                         <button type="submit"
-                            className="btn btn-primary w-full">Ingresa</button>
-                        <button type="button"
-                            className="btn btn-outline w-full"
-                            onClick={() => navigate("/signup")}>No tienes cuenta?</button>
+                            className="btn btn-primary w-full">
+                            Ingresa
+                        </button>
+                        <div className="divider w-full">OR</div>
+                        <button type="button" className="btn btn-outline w-full" onClick={() => authService.signInGoogle()}>
+                            <FcGoogle />
+                            <span>Inicia con google</span>
+                        </button>
+                        <button type="button" className="btn btn-outline w-full" onClick={() => navigate("/signup")}>
+                            No tienes cuenta?
+                        </button>
                     </div>
                 </Form>
             </div>

@@ -1,8 +1,7 @@
 import { redirect } from "react-router-dom"
 import authStore from "../../stores/auth"
 
-export const loader = async ({ ...rest }) => {
-    console.log(rest)
+export const loader = async () => {
     if (!authStore.getState().authenticated) return redirect("/signin")
     return null
 }
