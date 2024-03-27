@@ -1,9 +1,10 @@
 import { Link, NavLink } from "react-router-dom"
 import authStore from "../stores/auth"
+import authService from "../services/authService"
 
 const Navbar = () => {
 
-    const { authenticated, signOutState } = authStore()
+    const { authenticated } = authStore()
 
     return (
         <header>
@@ -15,7 +16,7 @@ const Navbar = () => {
                     {authenticated ?
                         <>
                             <li><NavLink to="/dashboard">Dashboard</NavLink></li>
-                            <li><button onClick={() => signOutState()}>Cierra Sesion</button></li>
+                            <li><button onClick={() => authService.signOut()}>Cierra Sesion</button></li>
                         </>
                         :
                         <>
