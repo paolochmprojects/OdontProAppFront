@@ -1,11 +1,12 @@
 import { Form, redirect, useActionData, useNavigate } from "react-router-dom"
 import { SigupForm } from "../../types/sign"
 import authService from "../../services/authService"
-import authStore from "../../stores/auth"
 import { FaEye, FaEyeSlash } from "react-icons/fa"
 import { useRef, useState } from "react"
+import authStore from "../../stores/auth"
 
 export const loader = async () => {
+    console.log(authStore.getState().authenticated)
     if (authStore.getState().authenticated) return redirect("/")
     return null
 }
@@ -36,7 +37,7 @@ const SignUp = () => {
 
     const err = useActionData()
 
-    const toggleVisible = ()=>{
+    const toggleVisible = () => {
         setPassVisible(!passVisible)
         if (!passInput.current || !confirmPassInput.current) return
         passInput.current.type = !passVisible ? "password" : "text"

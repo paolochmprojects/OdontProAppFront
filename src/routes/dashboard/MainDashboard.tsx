@@ -8,10 +8,7 @@ export const loader = async () => {
 
 const MainDashboard = () => {
 
-    const { authenticated } = authStore()
-
     return (<main>
-        {authenticated && <>hola</>}
         <h1>Dashboard</h1>
     </main>)
 }

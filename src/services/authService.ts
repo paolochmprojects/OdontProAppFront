@@ -18,7 +18,7 @@ const authService = {
         const { error } = await supabase.auth.signInWithOAuth({
             provider: "google"
         });
-
+        
         if (error) return error;
         return null;
     },
@@ -38,7 +38,7 @@ const authService = {
     },
 
     signOut: async () => {
-        return await supabase.auth.signOut()
+        await supabase.auth.signOut()       
     }
 }
 
