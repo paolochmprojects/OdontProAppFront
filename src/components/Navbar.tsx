@@ -1,6 +1,5 @@
-import { Link, NavLink } from "react-router-dom"
+import { Link, NavLink, Form } from "react-router-dom"
 import authStore from "../stores/auth"
-import authService from "../services/authService"
 
 const Navbar = () => {
 
@@ -16,7 +15,11 @@ const Navbar = () => {
                     {authenticated ?
                         <>
                             <li><NavLink to="/dashboard">Dashboard</NavLink></li>
-                            <li><button onClick={() => authService.signOut()}>Cierra Sesion</button></li>
+                            <li>
+                            <Form method="POST" action="/signout">
+                                <button>Cierra Sesion</button>
+                            </Form>
+                            </li>
                         </>
                         :
                         <>
