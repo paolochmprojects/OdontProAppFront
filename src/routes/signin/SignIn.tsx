@@ -1,7 +1,6 @@
 import { Form, redirect, useActionData, useNavigate } from "react-router-dom"
 import authService from "../../services/authService"
 import authStore from "../../stores/auth"
-import { FcGoogle } from "react-icons/fc";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useRef, useState } from "react";
 
@@ -37,13 +36,13 @@ const SignIn = () => {
     const toggleVisible = () => {
         setPassVisible(!passVisible)
         if (!passInput.current) return
-        passInput.current.type = !passVisible ? "password" : "text"
+        passInput.current.type = passVisible ? "password" : "text"
     }
 
     return (<main>
         <div className="max-w-screen-lg mx-auto p-4">
             <div className="card shadow-lg max-w-lg p-10 mx-auto">
-                <Form className="flex flex-col gap-8" method="POST">
+                <Form className="flex flex-col gap-4" method="POST">
                     <h1 className="card-title font-bebas text-4xl">Inicia Sesión</h1>
                     {err instanceof Error && <div role="alert" className="alert alert-error" >
                         <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
@@ -77,10 +76,6 @@ const SignIn = () => {
                             Ingresa
                         </button>
                         <div className="divider w-full">OR</div>
-                        <button type="button" className="btn btn-outline w-full" onClick={() => authService.signInGoogle()}>
-                            <FcGoogle />
-                            <span>Inicia con google</span>
-                        </button>
                         <button type="button" className="btn btn-outline w-full" onClick={() => navigate("/signup")}>
                             No tienes cuenta?
                         </button>

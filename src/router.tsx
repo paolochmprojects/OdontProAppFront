@@ -6,9 +6,9 @@ import SignUp, { action as signUpAction, loader as signUpLoader } from "./routes
 import { action as signOutAction } from "./routes/signout/Signout"
 import NotFound from "./routes/NotFound";
 import DashLayout from "./routes/dashboard/DashLayout";
-import MainDashboard, {loader as mainDashboardLoader} from "./routes/dashboard/MainDashboard";
-import Periodontgrams from "./routes/dashboard/periodontgrams/Periodontgram";
-import Contacts from "./routes/dashboard/contacts/Contacts";
+import MainDashboard, { loader as mainDashboardLoader } from "./routes/dashboard/MainDashboard";
+import Periodontgrams, { loader as periodontgramLoader } from "./routes/dashboard/periodontgrams/Periodontgram";
+import Contacts, { loader as contactLoader } from "./routes/dashboard/contacts/Contacts";
 
 const router = createBrowserRouter([
     {
@@ -44,16 +44,24 @@ const router = createBrowserRouter([
             {
                 index: true,
                 element: <MainDashboard />,
-                loader: mainDashboardLoader
+                loader: mainDashboardLoader,
             },
             {
                 path: "contacts",
-                element: <Contacts/>
+                element: <Contacts />,
+                loader: contactLoader,
             },
             {
                 path: "periodontgrams",
                 element: <Periodontgrams />,
-            }
+                loader: periodontgramLoader,
+                children: [
+                    {
+                        path: "create",
+                        action: () => null
+                    }
+                ]
+            },
         ]
     },
     {

@@ -17,6 +17,7 @@ export const action = async ({ request }: { request: Request }) => {
 
 
     const userCredentials: SigupForm = {
+        name: data.name as string,
         email: data.email as string,
         password: data.password as string,
         confirmPassword: data.confirmPassword as string
@@ -40,19 +41,27 @@ const SignUp = () => {
     const toggleVisible = () => {
         setPassVisible(!passVisible)
         if (!passInput.current || !confirmPassInput.current) return
-        passInput.current.type = !passVisible ? "password" : "text"
-        confirmPassInput.current.type = !passVisible ? "password" : "text"
+        passInput.current.type = passVisible ? "password" : "text"
+        confirmPassInput.current.type = passVisible ? "password" : "text"
     }
 
     return (<main>
         <div className="max-w-screen-lg mx-auto p-4">
             <div className="card shadow-lg max-w-lg p-10 mx-auto">
-                <Form className="flex flex-col gap-8" method="POST">
+                <Form className="flex flex-col gap-4" method="POST">
                     <h1 className="card-title font-bebas text-4xl">Registrate</h1>
                     {err instanceof Error && <div role="alert" className="alert alert-error" >
                         <svg xmlns="http://www.w3.org/2000/svg" className="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                         <span>Error! {err.message}</span>
                     </div>}
+                    <div>
+                        <label htmlFor="name">Nombre:</label>
+                        <input id="name"
+                            className="input input-bordered w-full"
+                            type="text"
+                            name="name"
+                            required />
+                    </div>
                     <div>
                         <label htmlFor="email">Correo:</label>
                         <input id="email"
@@ -90,6 +99,7 @@ const SignUp = () => {
                     <div className="card-actions">
                         <button type="submit"
                             className="btn btn-primary w-full">Envía</button>
+                            <div className="divider w-full">OR</div>
                         <button type="button"
                             className="btn btn-outline w-full"
                             onClick={() => navigate("/signin")}>Ya tienes cuenta?</button>
