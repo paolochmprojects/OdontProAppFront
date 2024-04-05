@@ -53,7 +53,6 @@ class AuthService implements AuthServiceInterface {
         window.localStorage.clear()
         this.authstore.setState({ authenticated: false, token: null })
     }
-
 }
 
 export default new AuthService(apiService, authStore)

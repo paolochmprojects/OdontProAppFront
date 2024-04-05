@@ -47,7 +47,7 @@ const router = createBrowserRouter([
                 loader: mainDashboardLoader,
             },
             {
-                path: "contacts",
+                path: "patients",
                 element: <Contacts />,
                 loader: contactLoader,
             },

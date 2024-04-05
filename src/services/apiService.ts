@@ -1,3 +1,5 @@
+import { StoreApi, UseBoundStore } from "zustand"
+import authStore, { AuthState } from "../stores/auth"
 
 export interface ApiServiceInterface {
     get: <T>(url: string, q?: URLSearchParams) => Promise<T | Error>
@@ -13,13 +15,25 @@ interface ApiErrorResponse {
 }
 
 class ApiService implements ApiServiceInterface {
+
+    constructor(private authStore: UseBoundStore<StoreApi<AuthState>>){}
+
     async get<T>(url: string, q?: URLSearchParams): Promise<T | Error> {
         try {
             const queryString = "";
             if (q) {
                 queryString.toString()
             }
-            const response = await fetch(`${url}${queryString}`);
+
+            const headers:{"Content-Type": string, Authorization?: string} = {
+                "Content-Type": "application/json"
+            }
+            const {authenticated, token} = this.authStore.getState()
+            if(authenticated){
+                headers.Authorization = "Bearer " + token
+            }
+           
+            const response = await fetch(`${url}${queryString}`, {headers});
             if (!response.ok) {
                 const errResponse = await response.json() as ApiErrorResponse
                 throw new Error(`${errResponse.statusCode}: ${errResponse.message}`);
@@ -88,4 +102,4 @@ class ApiService implements ApiServiceInterface {
     }
 }
 
-export default new ApiService()
+export default new ApiService(authStore)

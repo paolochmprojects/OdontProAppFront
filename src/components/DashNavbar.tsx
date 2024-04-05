@@ -32,7 +32,7 @@ const DashNavBar = () => {
                 </Form>
             </ul>
         </nav>
-        <ul className={`absolute z-50 left-0 right-0 bottom-0 p-4 top-16 bg-base-100 flex justify-center items-center gap-6 flex-wrap ${openMenu ? "opacity-100" : "opacity-0"}`}>
+        <ul className={`absolute z-50 left-0 right-0 bottom-0 p-4 top-16 bg-base-100 flex justify-center items-center gap-6 flex-wrap ${openMenu ? "opacity-100" : "opacity-0 hidden"}`}>
             <li>
                 <NavLink to="/dashboard"
                     className="card w-52 h-52 flex items-center justify-center shadow-lg p-6 bg-base-300 hover:bg-base-200 gap-4"
@@ -42,11 +42,11 @@ const DashNavBar = () => {
                 </NavLink>
             </li>
             <li>
-                <NavLink to="/dashboard/contacts"
+                <NavLink to="/dashboard/patients"
                     className="card w-52 h-52 flex items-center justify-center shadow-lg p-6 bg-base-300 hover:bg-base-200 gap-4"
                     onClick={() => toogleMenu()}>
                     <IoMdContacts className="mx-auto" size={100} />
-                    <p className="text-center">Mis contactos</p>
+                    <p className="text-center">Mis pacientes</p>
                 </NavLink>
             </li>
             <li>

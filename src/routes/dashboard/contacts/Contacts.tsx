@@ -1,13 +1,20 @@
-import { contactService } from "../../../services/contactService"
+import { useLoaderData } from "react-router-dom"
+import patientService from "../../../services/patientService"
+import { PatientsData } from "../../../types/patients"
+import PatientList from "../../../components/patients/patient-list"
 
 export const loader = async () => {
-    await contactService.getMyContacts()
-    return null
+    return await patientService.getall()
 }
 
 const Contacts = () => {
+
+    const data = useLoaderData() as PatientsData
+
     return (<main className="p-4">
-        <h1></h1>
+        {data instanceof Error ? 
+        <></>: 
+        <PatientList patientsData={data}/>}
     </main >)
 }
 
