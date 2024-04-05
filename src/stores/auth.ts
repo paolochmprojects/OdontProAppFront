@@ -3,19 +3,16 @@ import settings from '../config/settings'
 
 const config = settings()
 
-interface State {
+export interface AuthState {
     authenticated: boolean,
-    token: string | null
-}
-
-interface Actions {
+    token: string | null,
     signInState: (token: string) => void,
     signOutState: () => void
 }
 
 const tokenStore = window.localStorage.getItem(config.VITE_TOKEN_KEY)
 
-const authStore = create<State & Actions>((set) => ({
+const authStore = create<AuthState>((set) => ({
     token: tokenStore,
     authenticated: tokenStore != null,
     signInState: (token) => set(() => ({ authenticated: true, token })),

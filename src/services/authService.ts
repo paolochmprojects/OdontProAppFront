@@ -1,7 +1,8 @@
 import { SiginForm, SigupForm } from "../types/sign"
 import settings from '../config/settings'
-import authStore from "../stores/auth"
+import authStore, { AuthState } from "../stores/auth"
 import apiService, { ApiServiceInterface} from "./apiService"
+import { StoreApi, UseBoundStore } from "zustand"
 
 const config = settings()
 
@@ -19,7 +20,10 @@ const urlAuth = config.VITE_API_URL + 'auth/'
 
 class AuthService implements AuthServiceInterface {
 
-    constructor(private apiService: ApiServiceInterface) { }
+    constructor(
+        private apiService: ApiServiceInterface,
+        private authstore: UseBoundStore<StoreApi<AuthState>>
+    ) { }
 
     async signIn(data: SiginForm): Promise<Error | null> {
         const dataToSend = JSON.stringify(data)
@@ -47,9 +51,9 @@ class AuthService implements AuthServiceInterface {
 
     signOut() {
         window.localStorage.clear()
-        authStore.setState({ authenticated: false, token: null })
+        this.authstore.setState({ authenticated: false, token: null })
     }
 
 }
 
-export default new AuthService(apiService)
+export default new AuthService(apiService, authStore)
