@@ -15,9 +15,9 @@ const DashNavBar = () => {
     }
 
     return (<header>
-        <nav className="navbar bg-base-100 mx-auto p-4 justify-between">
-            <div className="gap-4">
-                <button className="flex items-center" onClick={() => toogleMenu()}>
+        <nav className="navbar h-24 bg-base-100 mx-auto p-4 justify-between">
+            <div className="gap-4 items-center">
+                <button onClick={() => toogleMenu()}>
                     {openMenu ? <MdClose size={30} /> : <GiHamburgerMenu size={30} />}
                 </button>
                 <Link to="/dashboard">

@@ -1,76 +1,55 @@
 import { SiginForm, SigupForm } from "../types/sign"
 import settings from '../config/settings'
 import authStore from "../stores/auth"
+import apiService, { ApiServiceInterface} from "./apiService"
 
 const config = settings()
 
-interface ApiResponse {
-    message: string | string[]
-    error: string
-    statusCode?: number
+interface SignInResponse {
+    token: string
+}
+
+interface AuthServiceInterface {
+    signIn: (data: SiginForm) => Promise<null | Error>
+    signUp: (data: SigupForm) => Promise<null | Error>
+    signOut: () => void
 }
 
 const urlAuth = config.VITE_API_URL + 'auth/'
 
-const authService = {
+class AuthService implements AuthServiceInterface {
 
-    signIn: async (data: SiginForm): Promise<null | Error> => {
-        try {
-            const res: Response = await fetch(urlAuth + 'signin', {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+    constructor(private apiService: ApiServiceInterface) { }
 
-            if (!res.ok) {
-                const dataRes: ApiResponse = await res.json()
-                if (typeof dataRes.message === 'string') return new Error(dataRes.message)
-                return new Error(dataRes.message.join(' ,'));
-            }
+    async signIn(data: SiginForm): Promise<Error | null> {
+        const dataToSend = JSON.stringify(data)
 
-            const { token }: { token: string } = await res.json()
-            window.localStorage.setItem(config.VITE_TOKEN_KEY, token)
-            authStore.setState({ token: token, authenticated: true })
-            return null
+        // send data to api.
+        const resData = await this.apiService.post<SignInResponse>(urlAuth + "signin", dataToSend)
+        if (resData instanceof Error) return resData
 
-        } catch (error) {
-            if (error instanceof Error) return new Error(error.message);
-            return new Error("Comunicate con el desarrollador.")
+        // extract token from response.
+        const { token } = resData
+        window.localStorage.setItem(config.VITE_TOKEN_KEY, token)
+        authStore.setState({ authenticated: true, token })
+        return null
+    }
+
+    async signUp(data: SigupForm): Promise<Error | null> {
+        const dataToSend = JSON.stringify(data)
+        const resData = await this.apiService.post<SignInResponse>(urlAuth + "signup", dataToSend)
+
+        if (resData instanceof Error) {
+            return resData
         }
+        return null
+    }
 
-    },
-
-    signUp: async (data: SigupForm): Promise<null | Error> => {
-        console.log(data)
-        if (data.password !== data.confirmPassword) return new Error("Las contraseñas no coinciden.")
-        try {
-            const res = await fetch(urlAuth + 'signup', {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-
-            if (!res.ok) {
-                const dataRes: ApiResponse = await res.json()
-                if (typeof dataRes.message === 'string') return new Error(dataRes.message)
-                return new Error(dataRes.message.join(' ,'));
-            }
-
-            return null
-        } catch (error) {
-            if (error instanceof Error) return new Error(error.message);
-            return new Error("Comunicate con el desarrollador.")
-        }
-    },
-
-    signOut: async () => {
-        window.localStorage.removeItem(config.VITE_TOKEN_KEY)
+    signOut() {
+        window.localStorage.clear()
         authStore.setState({ authenticated: false, token: null })
     }
+
 }
 
-export default authService
+export default new AuthService(apiService)
